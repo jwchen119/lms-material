@@ -26,12 +26,13 @@ function browseCheckExpand(view) {
             if (loop[i].title==queryParams.expand[0]) {
                 queryParams.expand.shift();
                 view.autoClick(i, 0);
-                return;
+                return true;
             }
         }
         // Not found? Clear expand
         queryParams.expand=[];
     }
+    return false;
 }
 
 // lmsLastKeyPress is defined in server.js
@@ -142,7 +143,8 @@ function browseActions(view, item, args, count) {
                               weight:100});
             }
             if (undefined!=args['path'] && args['path'].length>0 && !queryParams.party && !LMS_KIOSK_MODE) {
-                actions.push({localfiles:true, title:i18n('Local files'), icon:'insert_drive_file', do:{ command:['musicartistinfo', 'localfiles', 'folder:'+args['path']], params:[]}, weight:102});
+                actions.push({localartwork:true, title:i18n('Local artwork'), icon:'insert_photo', do:{ command:['musicartistinfo', 'localartwork', 'folder:'+args['path']], params:[]}, weight:102});
+                actions.push({localfiles:true, title:i18n('Local files'), icon:'insert_drive_file', do:{ command:['musicartistinfo', 'localfiles', 'folder:'+args['path']], params:[]}, weight:103});
             }
         }
         if (lmsOptions.youTubePlugin && undefined!=args['artist']) {
@@ -388,11 +390,23 @@ function browseHandleListResponse(view, item, command, resp, prevPage) {
                 view.currentActions.push({albumRating:true, title:i18n("Set rating for all tracks"), icon:"stars", weight:101});
             }
             if (lmsOptions.infoPlugin && undefined!=actParams['path'] && actParams['path'].length>0 && !queryParams.party && !LMS_KIOSK_MODE) {
-                // Check we have some localfiles, if not hide entry!
+                // Check we have some local files, if not hide entry!
                 lmsCommand('', ['musicartistinfo', 'localfiles', 'folder:'+actParams['path']]).then(({data}) => {
-                    if (!data || !data.result || !data.result.item_loop) {
+                    if (!data || !data.result || !data.result.item_loop || data.result.item_loop.length<1) {
                         for (var i=0, loop=view.currentActions, len=loop.length; i<len; ++i) {
                             if (loop[i].localfiles) {
+                                loop.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                }).catch(err => {
+                });
+                // Check we have some local artwork, if not hide entry!
+                lmsCommand('', ['musicartistinfo', 'localartwork', 'folder:'+actParams['path']]).then(({data}) => {
+                    if (!data || !data.result || !data.result.item_loop || data.result.item_loop.length<1) {
+                        for (var i=0, loop=view.currentActions, len=loop.length; i<len; ++i) {
+                            if (loop[i].localartwork) {
                                 loop.splice(i, 1);
                                 break;
                             }
@@ -514,8 +528,15 @@ function browseHandleListResponse(view, item, command, resp, prevPage) {
 
         if (view.items.length==0) {
             browseHandleNextWindow(view, item, command, resp, false, true);
-        } else {
-            browseCheckExpand(view);
+        } else if (!browseCheckExpand(view)) {
+            // Check if all images, if so click on first
+            let allImages = view.items[0].type=="image";
+            for (let i=1, loop=view.items, len=loop.length; i<len && allImages; ++i) {
+                allImages = loop[i].type=="image";
+            }
+            if (allImages) {
+                view.showImage(0);
+            }
         }
     }
 }
