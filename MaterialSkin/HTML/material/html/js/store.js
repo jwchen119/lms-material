@@ -33,10 +33,10 @@ function updateUiSettings(state, val) {
         setTheme(state.theme, state.color);
         bus.$emit('themeChanged');
     }
-    if (undefined!=val.fontSize && state.fontSize!=val.fontSize) {
-        state.fontSize = val.fontSize;
-        setLocalStorageVal('fontSize', state.fontSize);
-        setFontSize(state.fontSize);
+    if (undefined!=val.zoom && state.zoom!=val.zoom) {
+        state.zoom = val.zoom;
+        setLocalStorageVal('zoom', state.zoom);
+        setZoom(state.zoom);
     }
     if (undefined!=val.sortFavorites && state.sortFavorites!=val.sortFavorites) {
         state.sortFavorites = val.sortFavorites;
@@ -270,7 +270,7 @@ const store = new Vuex.Store({
         theme: defaultTheme(),
         color: 'blue',
         darkUi: true,
-        fontSize: 'r',
+        zoom: 1.0,
         letterOverlay:false,
         sortFavorites:true,
         autoScrollQueue:true,
@@ -502,13 +502,8 @@ const store = new Vuex.Store({
             state.coloredToolbars = state.theme.endsWith("-colored");
             state.darkUi = !state.theme.startsWith('light') && state.theme.indexOf("/light/")<0;
             state.color = getLocalStorageVal('color', state.color);
-            var larger = getLocalStorageBool('largerElements', getLocalStorageBool('largeFonts', undefined));
-            var fontSize = getLocalStorageVal('fontSize', undefined);
-            if (undefined==fontSize && undefined!=larger) {
-                fontSize = larger ? 'l' : 'r';
-                setLocalStorageVal('fontSize', fontSize);
-            }
-            state.fontSize = undefined==fontSize ? 'r' : fontSize;
+            var zoom = parseFloat(getLocalStorageVal('zoom', 1.0));
+            state.zoom = undefined==zoom || zoom>2.0 || zoom<0.5 ? 1.0 : zoom;
             state.autoScrollQueue = getLocalStorageBool('autoScrollQueue', state.autoScrollQueue);
             state.library = getLocalStorageVal('library', state.library);
             state.sortFavorites = getLocalStorageBool('sortFavorites', state.sortFavorites);
@@ -544,8 +539,8 @@ const store = new Vuex.Store({
             state.listPadding = parseInt(getLocalStorageVal('listPadding', state.listPadding));
             state.mediaControls = getLocalStorageBool('mediaControls', state.mediaControls);
             setTheme(state.theme, state.color);
-            if (state.fontSize!='r') {
-                setFontSize(state.fontSize);
+            if (1.0!=state.zoom) {
+                setZoom(state.zoom);
             }
             setListPadding(state.listPadding);
             lmsOptions.techInfo = state.techInfo;
@@ -642,8 +637,7 @@ const store = new Vuex.Store({
                         var prefs = JSON.parse(data.result._p2);
                         var opts = { theme: getLocalStorageVal('theme', undefined==prefs.theme ? state.theme : prefs.theme),
                                      color: getLocalStorageVal('color', undefined==prefs.color ? state.color : prefs.color),
-                                     largerElements: getLocalStorageBool('largerElements', undefined==prefs.largerElements ? state.largerElements : prefs.largerElements),
-                                     fontSize: getLocalStorageVal('fontSize', undefined==prefs.fontSize ? state.fontSize : prefs.fontSize),
+                                     zoom: getLocalStorageVal('zoom', undefined==prefs.zoom ? state.zoom : prefs.zoom),
                                      autoScrollQueue: getLocalStorageBool('autoScrollQueue', undefined==prefs.autoScrollQueue ? state.autoScrollQueue : prefs.autoScrollQueue),
                                      letterOverlay: getLocalStorageBool('letterOverlay', undefined==prefs.letterOverlay ? state.letterOverlay : prefs.letterOverlay),
                                      sortFavorites: getLocalStorageBool('sortFavorites', undefined==prefs.sortFavorites ? state.sortFavorites : prefs.sortFavorites),
@@ -686,9 +680,6 @@ const store = new Vuex.Store({
                                     opts.sorts[key]=value;
                                 }
                             }
-                        }
-                        if (undefined==opts.fontSize && undefined!=opts.largerElements) {
-                            opts.fontSize = opts.largerElements ? 'l' : 'r';
                         }
                         updateUiSettings(state, opts);
                     } catch(e) {

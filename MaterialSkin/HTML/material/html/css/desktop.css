@@ -8,20 +8,20 @@
 :root {
  --bottom-toolbar-height:72px;
  --desktop-bottom-toolbar-height:72px;
- --np-portrait-image-size:min(calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + 260px)), 100vw);
+ --np-portrait-image-size:min(calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + 260px)), (100vw/var(--zoom)));
  --np-icon-size:24px;
  --queue-visibility:initial;
  --queue-minwidth:400px;
 }
 
 /* For old browser's that dont support min() */
-@supports not (width: min(10px, 5vw)) {
+@supports not (width: min(10px, (5vw/var(--zoom)))) {
  :root {
-  --np-portrait-image-size:100vw;
+  --np-portrait-image-size:calc(100vw/var(--zoom));
  }
  @media (min-aspect-ratio: 68/100) {
   :root {
-   --np-portrait-image-size:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + 260px));
+   --np-portrait-image-size:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + 260px));
   }
  }
 }
@@ -39,17 +39,17 @@
 }
 
 .lms-list {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--sub-toolbar-height) + var(--bottom-toolbar-height)));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--sub-toolbar-height) + var(--bottom-toolbar-height)));
  overflow:auto;
  backface-visibility:hidden;
 }
 
 .lms-jumplist {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--sub-toolbar-height) + var(--bottom-toolbar-height)));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--sub-toolbar-height) + var(--bottom-toolbar-height)));
 }
 
 .lms-image-grid {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--sub-toolbar-height) + var(--bottom-toolbar-height)));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--sub-toolbar-height) + var(--bottom-toolbar-height)));
  overflow:auto;
  backface-visibility:hidden;
  margin:0px;
@@ -61,8 +61,8 @@
 
 .browse-progress {
  position:fixed;
- top:calc(var(--main-toolbar-height) + ((((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--bottom-toolbar-height)))/2) - 32px));
- left:calc(((100vw * (var(--splitter-pc)/100))/2) - 32px);
+ top:calc(var(--main-toolbar-height) + ((((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--bottom-toolbar-height)))/2) - 32px));
+ left:calc((((100vw/var(--zoom)) * (var(--splitter-pc)/100))/2) - 32px);
 }
 
 .lms-splitter {
@@ -90,7 +90,7 @@
  content: '';
  top: var(--main-toolbar-height);
  width: 12px;
- height: calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--bottom-toolbar-height)));
+ height: calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--bottom-toolbar-height)));
  margin-left:-2px;
  z-index: 4;
 }
@@ -128,13 +128,13 @@
 .np-page {
  position:fixed;
  top:var(--main-toolbar-height);
- height:calc((var(--vh, 1vh)*100) - var(--main-toolbar-height));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - var(--main-toolbar-height));
  bottom:0px;
  width:100%;
 }
 
 .np-bgnd {
- height:calc((var(--vh, 1vh)*100) - var(--main-toolbar-height));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - var(--main-toolbar-height));
 }
 
 .np-controls-desktop {
@@ -149,28 +149,28 @@
 }
 
 .np-portrait-song-info {
- height:calc((var(--vh, 1vh)*100) - (var(--np-portrait-image-size) + 160px));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--np-portrait-image-size) + 160px));
 }
 
 .np-text-desktop {
  font-weight:var(--std-weight);
  margin:12px 8px 0px 0px;
  height:2em;
- max-width:calc(100vw - 400px);
+ max-width:calc((100vw/var(--zoom)) - 400px);
 }
 
 .np-text-sub-desktop {
  font-weight:var(--std-weight);
  margin:0px 8px -4px 0px;
  height:2em;
- max-width:calc(100vw - 400px);
+ max-width:calc((100vw/var(--zoom)) - 400px);
 }
 
 .np-details-desktop {
  position:fixed;
  left:240px;
  bottom:4px;
- width:calc(100vw - 240px);
+ width:calc((100vw/var(--zoom)) - 240px);
  height:64px;
  padding:0px;
  background:transparent!important;
@@ -178,7 +178,7 @@
 
 .np-desktop-sb .np-details-desktop {
  left:290px;
- width:calc(100vw - 290px);
+ width:calc((100vw/var(--zoom)) - 290px);
 }
 
 .np-image-desktop {
@@ -209,11 +209,11 @@
 @media screen and (max-width: 650px) {
  .np-details-desktop {
   left:164px;
-  width:calc(100vw - 164px);
+  width:calc((100vw/var(--zoom)) - 164px);
  }
  .np-desktop-sb .np-details-desktop {
   left:214px;
-  width:calc(100vw - 214px);
+  width:calc((100vw/var(--zoom)) - 214px);
  }
  .np-image-desktop {
   display:none!important;
@@ -291,7 +291,7 @@
  position:fixed;
  left:0px;
  bottom:calc(var(--bottom-toolbar-height) - 11px);
- width:100vw;
+ width:calc(100vw/var(--zoom));
  height:10px !important;
  margin:0px !important; /* v-progress-linear has margin: 1rem 0; */
 }
@@ -308,22 +308,22 @@
  position:fixed;
  top:var(--main-toolbar-height);
  left:0px;
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--bottom-toolbar-height)));
- width:100vw;
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--bottom-toolbar-height)));
+ width:calc(100vw/var(--zoom));
  overflow:hidden;
  backface-visibility:hidden;
  z-index:0;
 }
 
 .np-info-text-desktop {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--bottom-toolbar-height) + 103px));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--bottom-toolbar-height) + 103px));
  overflow:auto;
  max-width:1000px;
  margin:auto;
 }
 
 .np-info-text-full-desktop {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + var(--bottom-toolbar-height) + 95px));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + var(--bottom-toolbar-height) + 95px));
  overflow:auto;
  max-width:1000px;
  margin:auto;
@@ -332,20 +332,20 @@
 .np-image-landscape {
  padding:16px 16px 0px 16px;
  object-fit:contain;
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + 120px));
- width:50vw;
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + 120px));
+ width:calc(50vw/var(--zoom));
  margin-left:auto;
  margin-right:auto;
  float:left;
 }
 
 .np-image-landscape-wide {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + 16px)) !important;
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + 16px)) !important;
 }
 
 .np-details-landscape {
- height:calc((var(--vh, 1vh)*100) - (var(--main-toolbar-height) + 120px));
- width:50vw;
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - (var(--main-toolbar-height) + 120px));
+ width:calc(50vw/var(--zoom));
  display:flex;
  justify-content:center;
  flex-direction:column;
@@ -353,12 +353,12 @@
 }
 
 #letterOverlay {
- width:calc(1vw * var(--splitter-pc)) !important;
+ width:calc((1vw/var(--zoom)) * var(--splitter-pc)) !important;
 }
 
 .ios-vcard-text-workaround {
  top:var(--main-toolbar-height);
- height:calc((var(--vh, 1vh)*100) - var(--main-toolbar-height));
+ height:calc((var(--vh, 1vh)*(100/var(--zoom))) - var(--main-toolbar-height));
 }
 
 @media screen and (max-height: 130px) {

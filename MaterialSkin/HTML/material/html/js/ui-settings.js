@@ -68,7 +68,7 @@ Vue.component('lms-ui-settings', {
     <v-divider v-if="allowLayoutAdjust"></v-divider>
 
     <v-list-tile>
-     <v-select :items="fontSizes" :label="i18n('Font size')" v-model="fontSize" item-text="label" item-value="key"></v-select>
+     <v-slider :step="5" :min="75" :max="150" v-model="zoom" thumb-label="always" label="Zoom"></v-slider>
     </v-list-tile>
     <v-divider></v-divider>
 
@@ -372,8 +372,7 @@ Vue.component('lms-ui-settings', {
             colorList: { } ,
             userColors: [ ],
             colorToolbars: false,
-            fontSize: 'r',
-            fontSizes: [],
+            zoom: 100,
             listPadding: 0,
             listPaddings: [],
             letterOverlay:false,
@@ -555,7 +554,7 @@ Vue.component('lms-ui-settings', {
             this.theme = themeParts.join('-');
             this.colorToolbars = 'colored'==variant;
             this.color = this.$store.state.color;
-            this.fontSize = this.$store.state.fontSize;
+            this.zoom = 100.0 * this.$store.state.zoom;
             this.listPadding = this.$store.state.listPadding;
             this.autoScrollQueue = this.$store.state.autoScrollQueue;
             this.stopButton = this.$store.state.stopButton;
@@ -614,9 +613,6 @@ Vue.component('lms-ui-settings', {
                                { value: 15, label: i18n("%1 seconds", 15)},
                                { value: 30, label: i18n("%1 seconds", 30)}
                              ];
-            this.fontSizes = [ { key: 'l',  label: i18n("Large") },
-                               { key: 'r',  label: i18n("Regular") },
-                               { key: 's',  label: i18n("Small") } ];
             this.listPaddings = [
                 { value:0, label:i18n('None')},
                 { value:1, label:i18n('Tiny')},
@@ -658,7 +654,7 @@ Vue.component('lms-ui-settings', {
             let settings = {
                       theme:this.theme+(this.colorToolbars ? '-colored' : ''),
                       color:this.color,
-                      fontSize:this.fontSize,
+                      zoom:this.zoom/100.0,
                       listPadding:this.listPadding,
                       autoScrollQueue:this.autoScrollQueue,
                       letterOverlay:this.letterOverlay,
